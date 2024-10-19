@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -23,19 +23,33 @@ const DATA = [
   },
 ];
 
-const Item = ({title}) => (
+const Item = ({ title }) => (
   <View style={styles.item}>
     <Text style={styles.title}>{title}</Text>
   </View>
 );
 
 export default function App() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const stopRefreshing = () => {
+    setIsRefreshing(false);
+  };
+
+  const refreshItems = () => {
+    setIsRefreshing(true);
+    // Имитируем задержку, например, для сетевого запроса
+    setTimeout(stopRefreshing, 1000); // Остановка обновления через 1 секунду
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
+        data={DATA} // Отображение прежнего массива данных
+        renderItem={({ item }) => <Item title={item.title} />}
         keyExtractor={item => item.id}
+        refreshing={isRefreshing} // Индикатор обновления
+        onRefresh={refreshItems} // Запуск обновления при Pull to Refresh
       />
     </SafeAreaView>
   );

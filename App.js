@@ -7,7 +7,6 @@ import {
   StatusBar,
 } from 'react-native';
 
-// Список языков программирования
 const DATA = [
   {
     id: '1',
@@ -30,7 +29,7 @@ export default function App() {
     setIsRefreshing(true);
     setTimeout(() => {
       setIsRefreshing(false);
-    }, 1000); // Имитируем задержку для обновления
+    }, 1000);
   };
 
   return (

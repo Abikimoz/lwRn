@@ -1,59 +1,40 @@
-import React, { useState } from 'react';
-import LanguageItem from './components/LanguageItem';
-import {
-  SafeAreaView,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-} from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import LanguageList from './components/LanguageList'; // Компонент с вашим списком языков
+import AboutMe from './components/AboutMe'; // Компонент "О себе"
+import NotFound from './components/NotFound'; // Компонент "Не найдено"
+import { MaterialCommunityIcons } from 'react-native-vector-icons'; // Импортируем иконки
 
-const DATA = [
-  {
-    id: '1',
-    title: 'JavaScript',
-    experience: '2 года опыта',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png',
-  },
-  {
-    id: '2',
-    title: 'Java',
-    experience: '7 месяцев опыта',
-    logo: 'https://dev.java/assets/images/java-logo-vector.png',
-  },
-];
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const refreshItems = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 1000);
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={({ item }) => (
-          <LanguageItem 
-            title={item.title} 
-            experience={item.experience} 
-            logo={item.logo} 
-          />
-        )}
-        keyExtractor={item => item.id}
-        refreshing={isRefreshing}
-        onRefresh={refreshItems}
-      />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Мои языки программирования') {
+              iconName = focused ? 'book-open-page-variant' : 'book';
+            } else if (route.name === 'О Себе') {
+              iconName = focused ? 'account-circle' : 'account';
+            } else if (route.name === 'Не найдено') {
+              iconName = focused ? 'alert-circle' : 'alert';
+            }
+
+            // Возвращаем иконку
+            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#2196F3', // Цвет активной вкладки
+          tabBarInactiveTintColor: 'gray', // Цвет неактивных вкладок
+        })}
+      >
+        <Tab.Screen name="Мои языки программирования" component={LanguageList} />
+        <Tab.Screen name="О Себе" component={AboutMe} />
+        <Tab.Screen name="Не найдено" component={NotFound} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-  },
-});
